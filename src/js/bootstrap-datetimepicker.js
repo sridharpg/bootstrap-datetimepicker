@@ -56,10 +56,11 @@
         throw new Error('bootstrap-datetimepicker requires Moment.js to be loaded first');
     }
 
+    //overwrite addclass class method
     $.fn.__addClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_replaceClassMap.hasOwnProperty(className)) {
+        if (_replaceClassMap && _replaceClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _replaceClassMap[className];
         }
@@ -68,11 +69,11 @@
         return $.fn.addClass.apply(this, cloneArguments);
     };
 
-    //overwrite add class method
+    //overwrite find class method
     $.fn.__find = function (className) {
         var cloneArguments = arguments;
 
-        if (replaceableClassesForFind.hasOwnProperty(className)) {
+        if (replaceableClassesForFind && replaceableClassesForFind.hasOwnProperty(className)) {
             cloneArguments[0] = replaceableClassesForFind[className];
         }
 
@@ -80,32 +81,13 @@
         return $.fn.find.apply(this, cloneArguments);
     };
 
-    var _replaceClassMap = {
-            'bootstrap-datetimepicker-widget dropdown-menu' : 'bootstrap-datetimepicker-widget  ui popup top left transition visible',
-            'glyphicon glyphicon-chevron-left':'left arrow icon',
-            'glyphicon glyphicon-chevron-right':'right arrow icon',
-            'table-condensed':'',
-            'glyphicon glyphicon-chevron-up':'up arrow icon',
-            'glyphicon glyphicon-chevron-down':'down arrow icon',
-            'btn':'btn btn-primary',
-            'seperator':'',//bootstrap class = Doesn't do anything.
-            'btn-primary':'',
-            'list-unstyled':'',
-            'col-sm-6':'',
-            'collapse in':'',
-            'collapse':'',
-            'pull-right':'right',
-            'in':'',
-            'row':'',
-            'btn btn-primary':'ui button'
-        },
-        replaceableClassesForFind = {
-            'collapse':'',
-            '.in':'',
-            '.collapse.in':'',
-            '.btn':''
-        },
+    var _replaceClassMap = {},
+        replaceableClassesForFind = {},
         dateTimePicker = function (element, options) {
+            if (options.icons) {
+                replaceableClassesForFind = options.icons.replaceableClassesForFind;
+                _replaceClassMap = options.icons.replaceClassMap;
+            }
             var picker = {},
                 date = moment().startOf('d'),
                 viewDate = date.clone(),
