@@ -73,8 +73,8 @@
     $.fn.__find = function (className) {
         var cloneArguments = arguments;
 
-        if (replaceableClassesForFind && replaceableClassesForFind.hasOwnProperty(className)) {
-            cloneArguments[0] = replaceableClassesForFind[className];
+        if (_replaceableClassesForFind && _replaceableClassesForFind.hasOwnProperty(className)) {
+            cloneArguments[0] = _replaceableClassesForFind[className];
         }
 
         // Now go back to jQuery's original find method
@@ -82,12 +82,10 @@
     };
 
     var _replaceClassMap = {},
-        replaceableClassesForFind = {},
+        _replaceableClassesForFind = {},
         dateTimePicker = function (element, options) {
-            if (options.icons) {
-                replaceableClassesForFind = options.icons.replaceableClassesForFind;
-                _replaceClassMap = options.icons.replaceClassMap;
-            }
+            _replaceableClassesForFind = options.replaceableClassesForFind;
+            _replaceClassMap = options.replaceClassMap;
             var picker = {},
                 date = moment().startOf('d'),
                 viewDate = date.clone(),
@@ -2252,6 +2250,39 @@
                 return picker;
             };
 
+
+            picker.replaceClassMap = function (replaceClassMap) {
+                if (arguments.length === 0) {
+                    return $.extend({}, options.replaceClassMap);
+                }
+
+                if (!(replaceClassMap instanceof Object)) {
+                    throw new TypeError('replaceClassMap() expects parameter to be an Object');
+                }
+                $.extend(options.replaceClassMap, replaceClassMap);
+                if (widget) {
+                    hide();
+                    show();
+                }
+                return picker;
+            };
+
+            picker.replaceableClassesForFind = function (replaceableClassesForFind) {
+                if (arguments.length === 0) {
+                    return $.extend({}, options.replaceableClassesForFind);
+                }
+
+                if (!(replaceableClassesForFind instanceof Object)) {
+                    throw new TypeError('replaceableClassesForFind() expects parameter to be an Object');
+                }
+                $.extend(options.replaceableClassesForFind, replaceableClassesForFind);
+                if (widget) {
+                    hide();
+                    show();
+                }
+                return picker;
+            };
+
             // initializing element and component attributes
             if (element.is('input')) {
                 input = element;
@@ -2470,6 +2501,9 @@
         disabledTimeIntervals: false,
         disabledHours: false,
         enabledHours: false,
-        viewDate: false
+        viewDate: false,
+        replaceClassMap: null,
+        replaceableClassesForFind: null
+
     };
 }));
