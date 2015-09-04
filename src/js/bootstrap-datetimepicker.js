@@ -60,7 +60,7 @@
     $.fn.__addClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_replaceClassMap && _replaceClassMap.hasOwnProperty(className)) {
+        if (_replaceClassMap !== null && _replaceClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _replaceClassMap[className];
         }
@@ -73,7 +73,7 @@
     $.fn.__find = function (className) {
         var cloneArguments = arguments;
 
-        if (_replaceableClassesForFind && _replaceableClassesForFind.hasOwnProperty(className)) {
+        if (_replaceableClassesForFind !== null && _replaceableClassesForFind.hasOwnProperty(className)) {
             cloneArguments[0] = _replaceableClassesForFind[className];
         }
 
@@ -686,7 +686,8 @@
                     }
 
                     daysViewHeader.eq(0).__find('span').attr('title', 'Previous Month');
-                    daysViewHeader.eq(1).attr('title', 'Select Month');
+                    //The below line is commented due to overing issue in eventz.
+                    //daysViewHeader.eq(1).attr('title', 'Select Month');
                     daysViewHeader.eq(2).__find('span').attr('title', 'Next Month');
 
                     daysView.__find('.disabled').removeClass('disabled');
