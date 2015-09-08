@@ -60,13 +60,52 @@
     $.fn.__addClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_replaceClassMap !== null && _replaceClassMap.hasOwnProperty(className)) {
+        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
-            cloneArguments[0] = _replaceClassMap[className];
+            cloneArguments[0] = _defaultClassMap[className];
         }
 
         // Now go back to jQuery's original addClass method.
         return $.fn.addClass.apply(this, cloneArguments);
+    };
+
+    //overwrite removeClass  method
+    $.fn.__removeClass = function (className) {
+        var cloneArguments = arguments;
+
+        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+            //replace the original class by our class
+            cloneArguments[0] = _defaultClassMap[className];
+        }
+
+        // Now go back to jQuery's original addClass method.
+        return $.fn.removeClass.apply(this, cloneArguments);
+    };
+
+    //overwrite removeClass  method
+    $.fn.__toggleClass = function (className) {
+        var cloneArguments = arguments;
+
+        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+            //replace the original class by our class
+            cloneArguments[0] = _defaultClassMap[className];
+        }
+
+        // Now go back to jQuery's original addClass method.
+        return $.fn.toggleClass.apply(this, cloneArguments);
+    };
+
+    //overwrite addclass class method
+    $.fn.__hasClass = function (className) {
+        var cloneArguments = arguments;
+
+        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+            //replace the original class by our class
+            cloneArguments[0] = _defaultClassMap[className];
+        }
+
+        // Now go back to jQuery's original addClass method.
+        return $.fn.hasClass.apply(this, cloneArguments);
     };
 
     //overwrite find class method
@@ -81,11 +120,23 @@
         return $.fn.find.apply(this, cloneArguments);
     };
 
-    var _replaceClassMap = {},
-        _replaceableClassesForFind = {},
+    var _replaceableClassesForFind = {
+            'collapse': '.ui.hidden',
+            '.in': '.visible',
+            '.collapse.in': '.ui.visible',
+            '.collapse:not(.in)' : '.ui.hidden:not(.ui.visible)'
+        },
+        _defaultClassMap = {
+            'bootstrap-datetimepicker-widget dropdown-menu' : 'bootstrap-datetimepicker-widget  ui popup top left transition visible',
+            '.collapse:not(.in)' : '.ui.hidden:not(.ui.visible)',
+            'collapse in': 'ui visible',
+            'collapse':'ui hidden',
+            'pull-right': 'right',
+            'in': 'ui visible'
+        },
         dateTimePicker = function (element, options) {
-            _replaceableClassesForFind = options.replaceableClassesForFind;
-            _replaceClassMap = options.replaceClassMap;
+            $.extend(_replaceableClassesForFind, _replaceableClassesForFind, options.replaceableClassesForFind);
+            $.extend(_defaultClassMap, _defaultClassMap, options.replaceClassMap);
             var picker = {},
                 date = moment().startOf('d'),
                 viewDate = date.clone(),
@@ -336,7 +387,7 @@
                         toolbar = $('<li>').__addClass('picker-switch' + (options.collapse ? ' accordion-toggle' : '')).append(getToolbar());
 
                     if (options.inline) {
-                        template.removeClass('dropdown-menu');
+                        template.__removeClass('dropdown-menu');
                     }
 
                     if (use24Hours) {
@@ -437,15 +488,15 @@
                     }
 
                     if (vertical === 'top') {
-                        widget.__addClass('top').removeClass('bottom');
+                        widget.__addClass('top').__removeClass('bottom');
                     } else {
-                        widget.__addClass('bottom').removeClass('top');
+                        widget.__addClass('bottom').__removeClass('top');
                     }
 
                     if (horizontal === 'right') {
                         widget.__addClass('pull-right');
                     } else {
-                        widget.removeClass('pull-right');
+                        widget.__removeClass('pull-right');
                     }
 
                     // __find the first parent element that has a relative css positioning
@@ -581,7 +632,7 @@
                         monthsViewHeader = monthsView.__find('th'),
                         months = monthsView.__find('tbody').__find('span');
 
-                    monthsView.__find('.disabled').removeClass('disabled');
+                    monthsView.__find('.disabled').__removeClass('disabled');
 
                     if (!isValid(viewDate.clone().subtract(1, 'y'), 'y')) {
                         monthsViewHeader.eq(0).__addClass('disabled');
@@ -593,7 +644,7 @@
                         monthsViewHeader.eq(2).__addClass('disabled');
                     }
 
-                    months.removeClass('active');
+                    months.__removeClass('active');
                     if (date.isSame(viewDate, 'y') && !unset) {
                         months.eq(date.month()).__addClass('active');
                     }
@@ -612,7 +663,7 @@
                         endYear = viewDate.clone().add(6, 'y'),
                         html = '';
 
-                    yearsView.__find('.disabled').removeClass('disabled');
+                    yearsView.__find('.disabled').__removeClass('disabled');
 
                     if (options.minDate && options.minDate.isAfter(startYear, 'y')) {
                         yearsViewHeader.eq(0).__addClass('disabled');
@@ -639,7 +690,7 @@
                         endDecade = startDecade.clone().add(100, 'y'),
                         html = '';
 
-                    decadesView.__find('.disabled').removeClass('disabled');
+                    decadesView.__find('.disabled').__removeClass('disabled');
 
                     if (startDecade.isSame(moment({y: 1900})) || (options.minDate && options.minDate.isAfter(startDecade, 'y'))) {
                         decadesViewHeader.eq(0).__addClass('disabled');
@@ -674,7 +725,7 @@
                         return;
                     }
 
-                    daysView.__find('.disabled').removeClass('disabled');
+                    daysView.__find('.disabled').__removeClass('disabled');
                     daysViewHeader.eq(1).text(viewDate.format(options.dayViewHeaderFormat));
 
                     if (!isValid(viewDate.clone().subtract(1, 'M'), 'M')) {
@@ -792,7 +843,7 @@
                         toggle.text(date.format('A'));
 
                         if (isValid(newDate, 'h')) {
-                            toggle.removeClass('disabled');
+                            toggle.__removeClass('disabled');
                         } else {
                             toggle.__addClass('disabled');
                         }
@@ -878,8 +929,8 @@
                     if (transitioning) {
                         return picker;
                     }
-                    if (component && component.hasClass('btn')) {
-                        component.toggleClass('active');
+                    if (component && component.__hasClass('btn')) {
+                        component.__toggleClass('active');
                     }
                     widget.hide();
 
@@ -1046,13 +1097,15 @@
                                 expanded.collapse('hide');
                                 closed.collapse('show');
                             } else { // otherwise just toggle in class on the two views
-                                expanded.removeClass('in');
+                                expanded.__removeClass('in');
+                                expanded.__addClass('collapse');
+                                closed.__removeClass('collapse');
                                 closed.__addClass('in');
                             }
                             if ($this.is('span')) {
-                                $this.toggleClass(options.icons.time + ' ' + options.icons.date);
+                                $this.__toggleClass(options.icons.time + ' ' + options.icons.date);
                             } else {
-                                $this.__find('span').toggleClass(options.icons.time + ' ' + options.icons.date);
+                                $this.__find('span').__toggleClass(options.icons.time + ' ' + options.icons.date);
                             }
 
                             // NOTE: uncomment if toggled state will be restored in show()
@@ -1179,8 +1232,8 @@
                     widget.on('click', '[data-action]', doAction); // this handles clicks on the widget
                     widget.on('mousedown', false);
 
-                    if (component && component.hasClass('btn')) {
-                        component.toggleClass('active');
+                    if (component && component.__hasClass('btn')) {
+                        component.__toggleClass('active');
                     }
                     widget.show();
                     place();
@@ -1402,7 +1455,7 @@
                 ///<summary>Disables the input element, the component is attached to, by adding a disabled="true" attribute to it.
                 ///If the widget was visible before that call it is hidden. Possibly emits dp.hide</summary>
                 hide();
-                if (component && component.hasClass('btn')) {
+                if (component && component.__hasClass('btn')) {
                     component.__addClass('disabled');
                 }
                 input.prop('disabled', true);
@@ -1411,8 +1464,8 @@
 
             picker.enable = function () {
                 ///<summary>Enables the input element, the component is attached to, by removing disabled attribute from it.</summary>
-                if (component && component.hasClass('btn')) {
-                    component.removeClass('disabled');
+                if (component && component.__hasClass('btn')) {
+                    component.__removeClass('disabled');
                 }
                 input.prop('disabled', false);
                 return picker;
@@ -2280,7 +2333,7 @@
                 }
             }
 
-            if (element.hasClass('input-group')) {
+            if (element.__hasClass('input-group')) {
                 // in case there is more then one 'input-group-addon' Issue #48
                 if (element.__find('.datepickerbutton').size() === 0) {
                     component = element.__find('[class^="input-group-"]');
