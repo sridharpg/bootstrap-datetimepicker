@@ -60,7 +60,7 @@
     $.fn.__addClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+        if (_defaultClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _defaultClassMap[className];
         }
@@ -73,7 +73,7 @@
     $.fn.__removeClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+        if (_defaultClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _defaultClassMap[className];
         }
@@ -86,7 +86,7 @@
     $.fn.__toggleClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+        if (_defaultClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _defaultClassMap[className];
         }
@@ -99,7 +99,7 @@
     $.fn.__hasClass = function (className) {
         var cloneArguments = arguments;
 
-        if (_defaultClassMap !== null && _defaultClassMap.hasOwnProperty(className)) {
+        if (_defaultClassMap.hasOwnProperty(className)) {
             //replace the original class by our class
             cloneArguments[0] = _defaultClassMap[className];
         }
@@ -112,7 +112,7 @@
     $.fn.__find = function (className) {
         var cloneArguments = arguments;
 
-        if (_replaceableClassesForFind !== null && _replaceableClassesForFind.hasOwnProperty(className)) {
+        if (_replaceableClassesForFind.hasOwnProperty(className)) {
             cloneArguments[0] = _replaceableClassesForFind[className];
         }
 
@@ -2294,7 +2294,7 @@
                     return $.extend({}, options.replaceClassMap);
                 }
 
-                if (!(replaceClassMap instanceof Object)) {
+                if (!(replaceClassMap instanceof Object) && replaceClassMap !== null) {
                     throw new TypeError('replaceClassMap() expects parameter to be an Object');
                 }
                 $.extend(options.replaceClassMap, replaceClassMap);
@@ -2310,7 +2310,7 @@
                     return $.extend({}, options.replaceableClassesForFind);
                 }
 
-                if (!(replaceableClassesForFind instanceof Object)) {
+                if (!(replaceableClassesForFind instanceof Object) && replaceableClassesForFind !== null) {
                     throw new TypeError('replaceableClassesForFind() expects parameter to be an Object');
                 }
                 $.extend(options.replaceableClassesForFind, replaceableClassesForFind);
