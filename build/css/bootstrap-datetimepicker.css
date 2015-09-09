@@ -360,6 +360,13 @@
 .input-group.date .input-group-addon {
   cursor: pointer;
 }
+.list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+.marked {
+  background: #66CCFF;
+}
 .sr-only {
   position: absolute;
   width: 1px;
