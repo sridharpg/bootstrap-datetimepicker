@@ -865,7 +865,7 @@
                     fillTime();
                 },
 
-                setValue = function (targetMoment) {
+                setValue = function (targetMoment, isFromInit) {
                     var oldDate = unset ? null : date;
 
                     // case of calling setValue(null or false)
@@ -892,14 +892,16 @@
                         date = targetMoment;
                         viewDate = date.clone();
                         input.val(date.format(actualFormat));
-                        element.data('date', date.format(actualFormat));
+                        element.data('date', date.toDate());
                         unset = false;
                         update();
-                        notifyEvent({
-                            type: 'dp.change',
-                            date: date.clone(),
-                            oldDate: oldDate
-                        });
+                        if(!isFromInit) {
+                            notifyEvent({
+                                type: 'dp.change',
+                                date: date.clone(),
+                                oldDate: oldDate
+                            });
+                        }
                     } else {
                         if (!options.keepInvalid) {
                             input.val(unset ? '' : date.format(actualFormat));
@@ -1207,7 +1209,7 @@
                         return picker;
                     }
                     if (input.val() !== undefined && input.val().trim().length !== 0) {
-                        setValue(parseInputDate(input.val().trim()));
+                        setValue(moment(element.data('date')));
                     } else if (options.useCurrent && unset && ((input.is('input') && input.val().trim().length === 0) || options.inline)) {
                         currentMoment = moment();
                         if (typeof options.useCurrent === 'string') {
@@ -1773,7 +1775,7 @@
                 options.defaultDate = parsedDate;
 
                 if (options.defaultDate && options.inline || (input.val().trim() === '' && input.attr('placeholder') === undefined)) {
-                    setValue(options.defaultDate);
+                    setValue(options.defaultDate, true);
                 }
                 return picker;
             };
