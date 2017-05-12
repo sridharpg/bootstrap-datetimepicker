@@ -895,7 +895,7 @@
                         element.data('date', date.toDate());
                         unset = false;
                         update();
-                        if(!isFromInit) {
+                        if (!isFromInit) {
                             notifyEvent({
                                 type: 'dp.change',
                                 date: date.clone(),
